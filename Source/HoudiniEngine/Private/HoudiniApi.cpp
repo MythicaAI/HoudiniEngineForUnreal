@@ -59,7 +59,7 @@ struct FunctionWrapper {
 #define PROFILEWRAP(NAME)												\
 	{																	\
 		static auto DLLPtr = FHoudiniApi::NAME;							\
-		static const char name[] = #NAME;								\
+		static const char name[] = "HAPI::" #NAME;						\
 		FHoudiniApi::NAME = FunctionWrapper<&DLLPtr, name>::invoke;		\
 	}
 
