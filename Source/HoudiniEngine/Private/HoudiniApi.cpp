@@ -50,6 +50,7 @@ template <auto Func, const char* Name>
 struct FunctionWrapper {
 	template <typename... Args>
 	static auto invoke(Args... args) {
+		TRACE_CPUPROFILER_EVENT_SCOPE_TEXT(Name);
 		ProfileScope profile(Name);
 		return (*Func)(std::forward<Args>(args)...);
 	}
