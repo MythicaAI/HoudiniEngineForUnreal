@@ -352,24 +352,39 @@ FHoudiniEngineScheduler::TaskCookAsset(const FHoudiniEngineTask & Task)
 				break;
 			}
 
-			static const double NotificationUpdateFrequency = 0.5;
-			if (FPlatformTime::Seconds() - LastUpdateTime >= NotificationUpdateFrequency)
+			const UHoudiniRuntimeSettings* HoudiniRuntimeSettings = GetDefault<UHoudiniRuntimeSettings>();
+			if (HoudiniRuntimeSettings->bDisplaySlateCookingNotifications)
 			{
-				// Reset update time.
-				LastUpdateTime = FPlatformTime::Seconds();
+				// Sleep the thread until next notification update should occur
+				static const double NotificationUpdateFrequency = 0.5;
+				if (FPlatformTime::Seconds() - LastUpdateTime >= NotificationUpdateFrequency)
+				{
+					// Reset update time.
+					LastUpdateTime = FPlatformTime::Seconds();
 
-				// Retrieve status string.
-				const FString & CookStateMessage = FHoudiniEngineUtils::GetCookState();
+					// Retrieve status string.
+					const FString& CookStateMessage = FHoudiniEngineUtils::GetCookState();
 
-				AddResponseMessageTaskInfo(
-					HAPI_RESULT_SUCCESS,
-					EHoudiniEngineTaskType::AssetCooking,
-					EHoudiniEngineTaskState::Working,
-					AssetId, Task, CookStateMessage);
+					AddResponseMessageTaskInfo(
+						HAPI_RESULT_SUCCESS,
+						EHoudiniEngineTaskType::AssetCooking,
+						EHoudiniEngineTaskState::Working,
+						AssetId, Task, CookStateMessage);
+				}
+
+				// We want to yield.
+				FPlatformProcess::SleepNoStats(UpdateFrequency);
 			}
-
-			// We want to yield.
-			FPlatformProcess::SleepNoStats(UpdateFrequency);
+			else
+			{
+				// Block the worker thread until the cook is completed
+				int NumOutputs = -1;
+				FHoudiniApi::GetOutputGeoCount(
+					FHoudiniEngine::Get().GetSession(),
+					Task.AssetId,
+					&NumOutputs
+				);
+			}
 		}
 	}	
 
