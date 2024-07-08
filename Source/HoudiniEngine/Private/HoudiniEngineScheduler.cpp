@@ -527,7 +527,7 @@ FHoudiniEngineScheduler::ProcessQueuedTasks()
 		if (FPlatformProcess::SupportsMultithreading())
 		{
 			// We want to yield for a bit.
-			FPlatformProcess::SleepNoStats(UpdateFrequency);
+			WakeUpEvent->Wait(UpdateFrequency * 1000);
 		}
 		else
 		{
@@ -649,6 +649,9 @@ FHoudiniEngineScheduler::AddTask(const FHoudiniEngineTask & Task)
 
 	// Wrap around if required.
 	PositionWrite &= (TaskCount - 1);
+
+	// Wake up thread to handle task.
+	WakeUpEvent->Trigger();
 }
 
 uint32
