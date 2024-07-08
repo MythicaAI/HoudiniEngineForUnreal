@@ -314,7 +314,6 @@ FHoudiniEngineManager::Tick(float DeltaTime)
 				case EHoudiniAssetState::PreInstantiation:
 				case EHoudiniAssetState::PreCook:
 				case EHoudiniAssetState::PostCook:
-				case EHoudiniAssetState::PreProcess:
 				case EHoudiniAssetState::Processing:
 					bKeepProcessing = true;
 					break;
@@ -327,6 +326,7 @@ FHoudiniEngineManager::Tick(float DeltaTime)
 				case EHoudiniAssetState::NeedRebuild:
 				case EHoudiniAssetState::NeedDelete:
 				case EHoudiniAssetState::Deleting:
+				case EHoudiniAssetState::PreProcess:
 					bKeepProcessing = false;
 					break;
 			}
@@ -1257,8 +1257,6 @@ FHoudiniEngineManager::PostCook(UHoudiniAssetComponent* HAC, const bool& bSucces
 		// Set new asset id.
 		HAC->AssetId = TaskAssetId;
 
-		FHoudiniParameterTranslator::UpdateParameters(HAC);
-
 		FHoudiniInputTranslator::UpdateInputs(HAC);
 
 		bool bHasHoudiniStaticMeshOutput = false;
@@ -1291,9 +1289,6 @@ FHoudiniEngineManager::PostCook(UHoudiniAssetComponent* HAC, const bool& bSucces
 		HAC->UpdateBounds();
 
 		FHoudiniEngine::Get().UpdateCookingNotification(FText::FromString(DisplayName + " :\nFinished processing outputs"), true);
-
-		// Trigger a details panel update
-		FHoudiniEngineUtils::UpdateEditorProperties(true);
 
 		// If any outputs have HoudiniStaticMeshes, and if timer based refinement is enabled on the HAC,
 		// set the RefineMeshesTimer and ensure BuildStaticMeshesForAllHoudiniStaticMeshes is bound to
@@ -1343,6 +1338,8 @@ FHoudiniEngineManager::PostCook(UHoudiniAssetComponent* HAC, const bool& bSucces
 bool
 FHoudiniEngineManager::StartTaskAssetProcess(UHoudiniAssetComponent* HAC)
 {
+	FHoudiniParameterTranslator::UpdateParameters(HAC);
+
 	HAC->SetAssetState(EHoudiniAssetState::Processing);
 
 	return true;
