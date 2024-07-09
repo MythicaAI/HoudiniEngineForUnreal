@@ -4868,8 +4868,10 @@ FHoudiniInputTranslator::UpdateWorldInputs(UHoudiniAssetComponent* HAC)
 	}
 
 #if WITH_EDITOR
+	const UHoudiniRuntimeSettings* HoudiniRuntimeSettings = GetDefault<UHoudiniRuntimeSettings>();
+
 	// Stop outliner objects from causing recooks while input objects are dragged around
-	if (FHoudiniMoveTracker::Get().IsObjectMoving)
+	if (!HoudiniRuntimeSettings->bCookWhileDragging && FHoudiniMoveTracker::Get().IsObjectMoving)
 	{
 		//HOUDINI_LOG_MESSAGE(TEXT("Object moving, not updating world inputs!"));
 		return false;
