@@ -245,6 +245,10 @@ protected:
 		//UPROPERTY(GlobalConfig, EditAnywhere, Category = Cooking)
 		bool bDisplaySlateCookingNotifications;
 
+		// Whether houdini engine should cook while an input is being dragged
+		UPROPERTY(GlobalConfig, EditAnywhere, Category = Cooking)
+		bool bCookWhileDragging;
+
 		// Default content folder storing all the temporary cook data (Static meshes, materials, textures, landscape layer infos...)
 		UPROPERTY(GlobalConfig, EditAnywhere, Category = Cooking)
 		FString DefaultTemporaryCookFolder;
