@@ -2841,7 +2841,8 @@ FUnrealMeshTranslator::CreateAndPopulateMeshPartFromMeshDescription(
 	const uint32 NumVertexInstances = NumTriangles * 3;
 
 	// Some checks: we expect triangulated meshes
-	if (MeshDescription.VertexInstances().Num() != NumTriangles * 3)
+	const UHoudiniRuntimeSettings* HoudiniRuntimeSettings = GetDefault<UHoudiniRuntimeSettings>();
+	if (HoudiniRuntimeSettings->bEnableStaticMeshTriangulationCheck && MeshDescription.VertexInstances().Num() != NumTriangles * 3)
 	{
 		HOUDINI_LOG_ERROR(TEXT("Expected a triangulated mesh, but # VertexInstances (%d) != # Triangles * 3 (%d)"), MeshDescription.VertexInstances().Num(), NumTriangles * 3);
 		return false;

@@ -110,6 +110,9 @@ UHoudiniRuntimeSettings::UHoudiniRuntimeSettings( const FObjectInitializer & Obj
 	// Spline marshalling
 	MarshallingSplineResolution = 50.0f;
 
+	// Static Mesh marshalling
+	bEnableStaticMeshTriangulationCheck = false;
+
 	// Static mesh proxy refinement settings
 	bEnableProxyStaticMesh = true;
 	bShowDefaultMesh = true;

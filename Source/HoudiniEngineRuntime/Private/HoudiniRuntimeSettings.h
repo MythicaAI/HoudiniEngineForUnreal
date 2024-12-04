@@ -323,6 +323,10 @@ protected:
 		UPROPERTY(GlobalConfig, EditAnywhere, Category = "GeometryMarshalling", meta = (DisplayName = "Curves - Default spline resolution (cm)"))
 		float MarshallingSplineResolution;
 
+		// Enable validation that exported static mesh data is correctly triangulated
+		UPROPERTY(GlobalConfig, EditAnywhere, Category = "GeometryMarshalling", meta = (DisplayName = "Static Mesh - Enable triangulation check"))
+		bool bEnableStaticMeshTriangulationCheck;
+
 		//-------------------------------------------------------------------------------------------------------------
 		// Static Mesh Options
 		//-------------------------------------------------------------------------------------------------------------
